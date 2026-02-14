@@ -1,0 +1,69 @@
+//@version=5
+indicator("Bid/Ask Volume", shorttitle="BA Vol", overlay=true)
+
+// --- Inputs ---
+ltf_input = input.timeframe("1", "Lower Timeframe", tooltip="Timeframe used for intrabar analysis. Must be lower than chart timeframe.")
+pos_input = input.string("top_right", "Position", options=["top_right", "bottom_right", "top_left", "bottom_left", "middle_right", "middle_left"])
+buy_col   = input.color(color.new(color.green, 0), "Ask (Buy) Color")
+sell_col  = input.color(color.new(color.red, 0), "Bid (Sell) Color")
+text_col  = input.color(color.white, "Text Color")
+
+// --- Logic ---
+// Fetch intrabar OHCV data
+// We use open, close, and volume to estimate buy/sell pressure
+it_open   = request.security_lower_tf(syminfo.tickerid, ltf_input, open)
+it_close  = request.security_lower_tf(syminfo.tickerid, ltf_input, close)
+it_volume = request.security_lower_tf(syminfo.tickerid, ltf_input, volume)
+
+float buy_v  = 0.0
+float sell_v = 0.0
+
+// We only perform the calculation on the last bar to save resources,
+// as the table only displays the current bar's data.
+if barstate.islast and array.size(it_volume) > 0
+    for i = 0 to array.size(it_volume) - 1
+        float o = array.get(it_open, i)
+        float c = array.get(it_close, i)
+        float v = array.get(it_volume, i)
+
+        if c > o
+            buy_v += v
+        else if c < o
+            sell_v += v
+        else
+            // Neutral bars are split 50/50
+            buy_v  += v / 2
+            sell_v += v / 2
+
+float total_v = buy_v + sell_v
+float buy_p   = total_v > 0 ? (buy_v / total_v) * 100 : 0
+float sell_p  = total_v > 0 ? (sell_v / total_v) * 100 : 0
+
+// --- Display ---
+// We use a table to show the current bar's calculated bid/ask quantity
+var table ba_table = table.new(pos_input, 2, 3, border_width = 1, border_color = color.gray)
+
+if barstate.islast
+    // Header
+    table.cell(ba_table, 0, 0, "Side", bgcolor = color.new(color.gray, 50), text_color = text_col)
+    table.cell(ba_table, 1, 0, "Volume (%)", bgcolor = color.new(color.gray, 50), text_color = text_col)
+
+    // Ask (Buy) Row
+    table.cell(ba_table, 0, 1, "Ask (Buy)", bgcolor = buy_col, text_color = text_col)
+    table.cell(ba_table, 1, 1, str.format("{0,number,#.##} ({1,number,#.##}%)", buy_v, buy_p), bgcolor = buy_col, text_color = text_col)
+
+    // Bid (Sell) Row
+    table.cell(ba_table, 0, 2, "Bid (Sell)", bgcolor = sell_col, text_color = text_col)
+    table.cell(ba_table, 1, 2, str.format("{0,number,#.##} ({1,number,#.##}%)", sell_v, sell_p), bgcolor = sell_col, text_color = text_col)
+
+// Error handling: if no intrabar data is returned
+var label err_label = na
+if barstate.islast and array.size(it_volume) == 0
+    if na(err_label)
+        err_label := label.new(bar_index, high, "No intrabar data found.\nEnsure 'Lower Timeframe' is\nsmaller than chart timeframe.", color=color.red, textcolor=color.white, style=label.style_label_down)
+    else
+        label.set_xy(err_label, bar_index, high)
+else
+    if not na(err_label)
+        label.delete(err_label)
+        err_label := na
