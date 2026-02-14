@@ -1,0 +1,52 @@
+//@version=5
+// @description Displays estimated Bid and Ask Quantity (Buy/Sell Volume) using intrabar analysis.
+indicator("Bid and Ask Quantity", overlay=true)
+
+// Input for the lower timeframe to use for intrabar analysis
+lowerTf = input.timeframe("1", "Intrabar Timeframe")
+
+// Function to calculate estimated Buy and Sell volume
+calcBuySellVolume() =>
+    float buyVol = 0.0
+    float sellVol = 0.0
+    // Fetch lower timeframe data
+    [opens, closes, volumes] = request.security_lower_tf(syminfo.tickerid, lowerTf, [open, close, volume])
+
+    if array.size(volumes) > 0
+        for i = 0 to array.size(volumes) - 1
+            float o = array.get(opens, i)
+            float c = array.get(closes, i)
+            float v = array.get(volumes, i)
+
+            if c > o
+                buyVol += v
+            else if c < o
+                sellVol += v
+            else
+                // If open equals close, split the volume
+                buyVol += v / 2
+                sellVol += v / 2
+    [buyVol, sellVol]
+
+// Execute the calculation
+[askQty, bidQty] = calcBuySellVolume()
+
+// UI Table implementation
+var displayTable = table.new(position.top_right, 2, 3, bgcolor=color.new(color.black, 80), border_width=1, border_color=color.gray)
+
+if barstate.islast
+    // Header
+    table.cell(displayTable, 0, 0, "Type", text_color=color.white, bgcolor=color.new(color.gray, 50))
+    table.cell(displayTable, 1, 0, "Quantity", text_color=color.white, bgcolor=color.new(color.gray, 50))
+
+    // Ask Quantity (Estimated Buy Volume)
+    table.cell(displayTable, 0, 1, "Ask Qty (Buy)", text_color=color.lime, text_halign=text.align_left)
+    table.cell(displayTable, 1, 1, str.tostring(askQty, format.volume), text_color=color.lime, text_halign=text.align_right)
+
+    // Bid Quantity (Estimated Sell Volume)
+    table.cell(displayTable, 0, 2, "Bid Qty (Sell)", text_color=color.red, text_halign=text.align_left)
+    table.cell(displayTable, 1, 2, str.tostring(bidQty, format.volume), text_color=color.red, text_halign=text.align_right)
+
+// Plotting for data window visibility
+plot(askQty, "Ask Quantity", color=color.new(color.lime, 100), display=display.data_window)
+plot(bidQty, "Bid Quantity", color=color.new(color.red, 100), display=display.data_window)
