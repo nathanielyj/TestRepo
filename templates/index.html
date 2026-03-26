@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Options Open Interest Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Options Open Interest Dashboard</h1>
+            <p>Visualizing Open Interest and OI Change across strikes</p>
+        </header>
+
+        <main>
+            <section class="chart-container">
+                <h2>Total Open Interest by Strike</h2>
+                <canvas id="oiChart"></canvas>
+            </section>
+
+            <section class="chart-container">
+                <h2>Change in Open Interest</h2>
+                <canvas id="oiChangeChart"></canvas>
+            </section>
+        </main>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>
