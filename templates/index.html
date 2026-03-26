@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P&L Monthly Calendar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>6-Month Profit & Loss Report</h1>
+            <div class="controls">
+                <button id="prevMonth">Previous</button>
+                <h2 id="currentMonthYear"></h2>
+                <button id="nextMonth">Next</button>
+            </div>
+        </header>
+        <div id="calendar-container">
+            <!-- Calendars for 6 months will be generated here -->
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
