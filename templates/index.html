@@ -3,21 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P&L Monthly Calendar</title>
+    <title>P&L Yearly Report</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <div class="container">
+    <div class="container-full">
         <header>
-            <h1>Monthly Profit & Loss Report</h1>
-            <div class="controls">
-                <button id="prevMonth">Previous</button>
-                <h2 id="currentMonthYear"></h2>
-                <button id="nextMonth">Next</button>
-            </div>
+            <h1>Profit & Loss Report - Last 12 Months</h1>
         </header>
-        <div id="calendar" class="calendar-grid">
-            <!-- Calendar will be generated here -->
+        <div id="year-container" class="year-grid">
+            <!-- 12 Monthly calendars will be generated here -->
         </div>
     </div>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
