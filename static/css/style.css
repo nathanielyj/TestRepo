@@ -1,0 +1,92 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f6;
+}
+
+.container-full {
+    width: 95%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.year-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.month-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.month-name {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.day-header {
+    text-align: center;
+    font-weight: bold;
+    padding: 5px;
+    font-size: 0.8rem;
+    background-color: #eee;
+    border-radius: 2px;
+}
+
+.day {
+    padding: 5px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    min-height: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.day-num {
+    font-weight: bold;
+    color: #555;
+    font-size: 0.75rem;
+}
+
+.pl-value {
+    text-align: right;
+    font-size: 0.7rem;
+    white-space: nowrap;
+}
+
+.profit {
+    color: #28a745;
+    background-color: #e6f4ea;
+}
+
+.loss {
+    color: #dc3545;
+    background-color: #fce8e6;
+}
+
+.empty-day {
+    background-color: #fdfdfd;
+}
